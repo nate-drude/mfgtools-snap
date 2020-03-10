@@ -1,5 +1,6 @@
-name: mfgtools-lool
-version: 2.3.4
+name: mfgtools-nsdrude-emr
+version: "git"
+base: core18
 summary: Freescale/NXP I.MX Chip image deploy tools
 description: |
   Freescale/NXP I.MX Chip image deploy tools.
@@ -7,19 +8,24 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: devmode # use 'strict' once you have the right plugs and slots
 
 apps:
-  mfgtoolcli:
-    command: bin/mfgtoolcli
+  uuu:
+    command: bin/uuu
 
 parts:
-  mgstools:
+  mfgtools:
     plugin: nil
     build-packages: [build-essential, cmake, libusb-1.0-0-dev, make]
     source: https://github.com/NXPmicro/mfgtools.git
-    prepare: |
-      cd TestPrgm && make cmake
-    build:
-      cd TestPrgm && make
-    install: |
-      install -D -t $SNAPCRAFT_PART_INSTALL/lib -m 644 TestPrgm/libMfgToolLib.so
-      install -D -t $SNAPCRAFT_PART_INSTALL/bin -m 755 TestPrgm/mfgtoolcli
-
+    source-commit: a3f490098d2d84f679bf6460214411d31c95bc18
+    override-build: |
+      cmake . && make -j8
+      install -D -t $SNAPCRAFT_PART_INSTALL/bin -m 755 uuu/uuu
+    build-packages:
+    - libusb-1.0-0-dev
+    - libzip-dev
+    - libbz2-dev
+    - pkg-config
+    - cmake
+    - libssl-dev
+    stage-packages:
+    - libusb-1.0-0-dev
